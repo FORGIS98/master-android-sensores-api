@@ -68,6 +68,18 @@ public class RegisterActivity extends AppCompatActivity {
         // [END onCreate()]
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            updateUI(currentUser);
+        }
+
+        // [END onStart()]
+    }
+
     private void registerUser(String emailUser, String passwordUser) {
         Log.d(TAG, "Se va a registrar al usuario: " + emailUser);
 
