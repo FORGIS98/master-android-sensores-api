@@ -18,4 +18,8 @@
     <string name="require_gps_position">Error: Se necesitan permisos.</string>
     <string name="getting_position">Localizando posición.</string>
 
+    <!-- CameraActivity Strings-->
+    <string name="take_picture">Hacer Foto</string>
+    <string name="save_picture">Guardar</string>
+
 </resources>
