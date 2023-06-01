@@ -23,63 +23,45 @@ public class GeoDataManager {
 
         List<Marker> markerList = new ArrayList<>();
 
-        try (InputStream inputStream = context.getAssets().open("public-restroom.geo")) {
+        try (InputStream inputStream = context.getAssets().open("public-restrooms.geo")) {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(inputStream, "UTF-8");
 
             int eventType = parser.getEventType();
+            GeoPoint wcPoint = new GeoPoint(0.0, 0.0);
+            String title = "";
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
-
                 String tagName = parser.getName();
-                Marker wcMarker = new Marker(mapView);
-                GeoPoint wcPoint = new GeoPoint(0.0, 0.0);;
 
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        if (tagName.equals("entry")) {
-                            Log.d(TAG, "Se lee etiqueta <entry>");
-                            wcMarker = new Marker(mapView);
-                            wcPoint = new GeoPoint(0.0, 0.0);
-                        } else  {
-                            if (tagName.equals("geo:lat")) {
-                                Log.d(TAG, "Se lee etiqueta <geo:lat>");
-                                wcPoint.setLatitude(Double.parseDouble(parser.nextText()));
-                            } else if (tagName.equals("geo:long")) {
-                                Log.d(TAG, "Se lee etiqueta <geo:long>");
-                                wcPoint.setLongitude(Double.parseDouble(parser.nextText()));
-                            }
-
-                            wcMarker.setPosition(wcPoint);
+                        if (tagName.equals("geo:lat")) {
+                            wcPoint.setLatitude(Double.parseDouble(parser.nextText()));
+                        } else if (tagName.equals("geo:long")) {
+                            wcPoint.setLongitude(Double.parseDouble(parser.nextText()));
+                        } else if (tagName.equals("title")) {
+                            title = parser.nextText();
                         }
-
                         break;
 
                     case XmlPullParser.END_TAG:
-                        Log.d(TAG, "Se lee etiqueta </entry>");
-                        if (tagName.equals("entry") && wcMarker.getPosition() != null) {
-                            Log.i(TAG, "Se registra una entrada en la lista.");
+                        if (tagName.equals("entry")) {
+                            Marker wcMarker = new Marker(mapView);
+                            wcMarker.setPosition(wcPoint);
+                            wcMarker.setTitle(title);
                             markerList.add(wcMarker);
                         }
-
                         break;
                 }
-
-                for (int i = 0; i < Math.min(markerList.size(), 10); i++) {
-                    Marker mrk = markerList.get(i);
-                    Log.d(TAG, "Marca: Long " + mrk.getPosition().getLongitude() + " y Lat " + mrk.getPosition().getLatitude());
-                }
-
                 eventType = parser.next();
             }
-
         } catch (IOException error) {
             Log.e(TAG, "Error al leer el archivo public-restroom.geo: " + error.getMessage());
         } catch (XmlPullParserException error) {
             Log.e(TAG, "Error al parsear el archivo public-restroom.geo: " + error.getMessage());
         }
-
         return markerList;
         // [END parseGeoFile()]
     }
