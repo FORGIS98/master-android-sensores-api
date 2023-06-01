@@ -74,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            Log.i(TAG, "El usuario ya existe: " + currentUser.getEmail());
             updateUI(currentUser);
         }
 

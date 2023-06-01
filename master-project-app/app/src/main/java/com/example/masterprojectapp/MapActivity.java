@@ -27,6 +27,8 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.List;
+
 public class MapActivity extends AppCompatActivity {
 
     private static final String TAG = "MapActivity";
@@ -36,6 +38,8 @@ public class MapActivity extends AppCompatActivity {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+
+    private boolean centerUser = true;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -46,6 +50,13 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
 
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         map = findViewById(R.id.wc_map);
@@ -54,50 +65,27 @@ public class MapActivity extends AppCompatActivity {
         map.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
         userGpsPosition = new Marker(map);
 
-        getLastLocation();
+        getMadrid();
         getUserLocation();
+
+        GeoDataManager dataManager = new GeoDataManager();
+        List<Marker> markerList = dataManager.parseGeoFile(this.getApplicationContext(), map);
 
         // [END onCreate]
     }
 
-    private void getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-        }
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    Log.d(TAG, "Se ha encontrado la ultima localizacion");
+    private void getMadrid() {
+        GeoPoint startPoint = new GeoPoint(40.416775, -3.703790);
+        map.getController().setZoom(15.0);
+        map.getController().setCenter(startPoint);
 
-                    GeoPoint startPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    map.getController().setZoom(15.0);
-                    map.getController().setCenter(startPoint);
+        userGpsPosition.setPosition(startPoint);
+        userGpsPosition.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(userGpsPosition);
 
-                    userGpsPosition.setPosition(startPoint);
-                    userGpsPosition.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                    map.getOverlays().add(userGpsPosition);
-                } else {
-                    Log.e(TAG, "fusedLocationClient:getLastLocation:onSuccess: No se ha encontrado la localizacion");
+        Toast.makeText(this, R.string.getting_position, Toast.LENGTH_LONG).show();
 
-                    GeoPoint startPoint = new GeoPoint(40.416775, -3.703790);
-                    map.getController().setZoom(15.0);
-                    map.getController().setCenter(startPoint);
-
-                    userGpsPosition.setPosition(startPoint);
-                    userGpsPosition.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-                    map.getOverlays().add(userGpsPosition);
-                }
-            }
-        }).addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "fusedLocationClient:getLastLocation:onFailre: " + e.getMessage());
-            }
-        });
-
-        // [END getLastLocation]
+        // [END getMadrid]
     }
 
     private void getUserLocation() {
@@ -110,7 +98,12 @@ public class MapActivity extends AppCompatActivity {
                 Log.i(TAG, "Se ha recupera la latitud: " + location.getLatitude() + " y la longitud: " + location.getLongitude());
 
                 GeoPoint actualPosition = new GeoPoint(location.getLatitude(), location.getLongitude());
-                map.getController().setCenter(actualPosition);
+
+                if (centerUser) {
+                    map.getController().setZoom(20.0);
+                    map.getController().setCenter(actualPosition);
+                    centerUser = !centerUser;
+                }
 
                 userGpsPosition.setPosition(actualPosition);
                 userGpsPosition.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
@@ -119,13 +112,11 @@ public class MapActivity extends AppCompatActivity {
             }
         };
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
             Log.d(TAG, "Se pide actualizar la posicion GPS");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        } else {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, locationListener);
         }
 
         // [END gerUserLocation]

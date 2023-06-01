@@ -16,5 +16,6 @@
 
     <!-- MapActivity Strings-->
     <string name="require_gps_position">Error: Se necesitan permisos.</string>
+    <string name="getting_position">Localizando posición.</string>
 
 </resources>
