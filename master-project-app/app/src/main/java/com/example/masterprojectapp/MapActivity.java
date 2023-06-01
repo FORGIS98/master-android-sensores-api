@@ -39,6 +39,7 @@ public class MapActivity extends AppCompatActivity {
     private Marker userGpsPosition;
 
     private LocationManager locationManager;
+    private LocationListener locationListener;
 
     private boolean centerUser = true;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -153,7 +154,7 @@ public class MapActivity extends AppCompatActivity {
                 GeoPoint actualPosition = new GeoPoint(location.getLatitude(), location.getLongitude());
 
                 if (centerUser) {
-                    map.getController().setZoom(16.0);
+                    map.getController().setZoom(20.0);
                     map.getController().setCenter(actualPosition);
                     centerUser = !centerUser;
                 }
