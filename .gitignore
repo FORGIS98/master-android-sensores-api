@@ -4,6 +4,7 @@
 *.ap_
 *.aab
 
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -83,3 +84,5 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+master-project-app/app/src/main/res/values/api_credentials.xml
