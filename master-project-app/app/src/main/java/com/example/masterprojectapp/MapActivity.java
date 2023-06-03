@@ -36,7 +36,7 @@ public class MapActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityLauncher;
 
     private MapView map;
-    Marker userGpsPosition;
+    private Marker userGpsPosition;
 
     private LocationManager locationManager;
 
@@ -88,7 +88,14 @@ public class MapActivity extends AppCompatActivity {
                     String title = marker.getTitle();
                     GeoPoint position = marker.getPosition();
                     Log.i(TAG, "Marker clickeado: Title: " + title + ", Position: " + position.toString());
-                    startBathroomActivity(title, position.toString());
+                    Double restroom_x_post = position.getLongitude();
+                    Double restroom_y_post = position.getLatitude();
+
+                    GeoPoint userPosition = userGpsPosition.getPosition();
+                    Double user_x_post = userPosition.getLongitude();
+                    Double user_y_post = userPosition.getLatitude();
+
+                    startBathroomActivity(title, restroom_x_post, restroom_y_post, user_x_post, user_y_post);
                     return true;
                 }
             });
@@ -108,10 +115,13 @@ public class MapActivity extends AppCompatActivity {
         // [END onCreate]
     }
 
-    private void startBathroomActivity(String title, String position) {
+    private void startBathroomActivity(String title, Double restroom_x_post, Double restroom_y_post, Double user_x_post, Double user_y_post) {
         Intent intent = new Intent(MapActivity.this, BathroomActivity.class);
         intent.putExtra("title", title);
-        intent.putExtra("position", position);
+        intent.putExtra("restroom_x_post", restroom_x_post);
+        intent.putExtra("restroom_y_post", restroom_y_post);
+        intent.putExtra("user_x_post", user_x_post);
+        intent.putExtra("user_y_post", user_y_post);
         activityLauncher.launch(intent);
     }
 

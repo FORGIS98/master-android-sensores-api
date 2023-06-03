@@ -19,6 +19,9 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:name=".EMTActivity"
+            android:exported="false" />
+        <activity
             android:name=".BathroomActivity"
             android:exported="false" />
         <activity

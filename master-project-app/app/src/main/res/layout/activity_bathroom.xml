@@ -1,20 +1,65 @@
 <!-- activity_layout.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="16dp">
+
+<!-- Título -->
+<TextView
+    android:id="@+id/bath_title"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:text="Título de la pantalla"
+    android:textSize="20sp"
+    android:textStyle="bold" />
 
-    <!-- Otros elementos de diseño -->
+<!-- Hueco para la foto -->
+<ImageView
+    android:id="@+id/foto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:src="@drawable/bano_publico"
+    android:scaleType="centerCrop"
+    android:adjustViewBounds="true"
+    android:layout_below="@id/bath_title"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="20dp" />
 
-    <TextView
-        android:id="@+id/bath_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_centerInParent="true" />
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/add_foto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    app:srcCompat="@drawable/ic_mas"
+    android:layout_alignEnd="@id/foto"
+    android:layout_alignBottom="@id/foto"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"/>
 
-    <Button
-        android:id="@+id/map_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+
+<!-- Valoración con estrellas -->
+<RatingBar
+    android:id="@+id/bath_valoration"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:numStars="5"
+    android:stepSize="1"
+    android:rating="4"
+    android:layout_centerInParent="true"
+    android:layout_below="@id/foto"
+    android:layout_marginBottom="16dp" />
+
+<!-- Botón "Cómo ir" -->
+<Button
+    android:id="@+id/como_ir"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:text="Cómo ir"
+    android:layout_alignParentBottom="true"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp" />
 </RelativeLayout>
+
