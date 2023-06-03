@@ -25,6 +25,9 @@
             android:name=".EMTActivity"
             android:exported="false" />
         <activity
+            android:name=".EMTActivity"
+            android:exported="false" />
+        <activity
             android:name=".BathroomActivity"
             android:exported="false" />
         <activity
