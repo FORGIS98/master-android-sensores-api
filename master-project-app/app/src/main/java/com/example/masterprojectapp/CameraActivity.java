@@ -171,7 +171,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private void saveCapturedImage() {
         if (bitmapCapturedImage != null) {
-            // TODO: Almacenar imagen en Firebase
+            MyFirebaseStorage myStorage = new MyFirebaseStorage();
+            myStorage.savePicture(imgTitle, bitmapCapturedImage, "-1");
         }
     }
 

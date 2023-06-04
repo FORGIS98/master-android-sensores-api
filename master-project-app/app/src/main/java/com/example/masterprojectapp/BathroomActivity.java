@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -88,7 +89,18 @@ public class BathroomActivity extends AppCompatActivity {
                     switch (activityCode) {
                         case 1:
                             Log.i(TAG, "CameraActivity Terminada Correctamente");
-                            // TODO: Cuando termine la actividad de la camara actualizar la imagen del ImageView
+                            MyFirebaseStorage myFirebaseStorage = new MyFirebaseStorage();
+                            myFirebaseStorage.retrievePicture(imgTitle, new MyFirebaseStorage.OnImageDownloadedListener() {
+                                @Override
+                                public void onImageDownloaded(Bitmap bitmap) {
+
+                                }
+
+                                @Override
+                                public void onImageDownloadedError(String errorMessage) {
+
+                                }
+                            });
                             break;
                         case 2:
                             Log.i(TAG, "EMTActivity Terminada Correctamente");

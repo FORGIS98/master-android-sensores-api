@@ -53,7 +53,7 @@ public class MyFirebaseStorage {
         // [END - savePicture]
     }
 
-    public boolean saveImageMetadata(String pictureName, String pictureLux) {
+    private boolean saveImageMetadata(String pictureName, String pictureLux) {
 
         Map<String, String> metadatos = new HashMap<>();
         metadatos.put(pictureName, pictureLux);
@@ -83,7 +83,7 @@ public class MyFirebaseStorage {
     public String retrievePictureLux(String pictureName) {
 
         CollectionReference metadataCollection = myFirestore.collection(METADATA_ROUTE);
-        AtomicReference<String> pictureLux = new AtomicReference<>("0");
+        AtomicReference<String> pictureLux = new AtomicReference<>("-1");
 
         metadataCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (DocumentSnapshot docSnap : queryDocumentSnapshots)
