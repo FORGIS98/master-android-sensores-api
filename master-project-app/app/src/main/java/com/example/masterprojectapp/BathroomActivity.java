@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.common.base.Strings;
 
 public class BathroomActivity extends AppCompatActivity {
 
@@ -30,6 +32,9 @@ public class BathroomActivity extends AppCompatActivity {
     Button buttonRuta;
     TextView tituloTextView;
     FloatingActionButton takeFoto;
+    ImageView imageView;
+
+    MyFirebaseStorage myStorage = new MyFirebaseStorage();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +51,16 @@ public class BathroomActivity extends AppCompatActivity {
             restroom_y_post = intent.getDoubleExtra("restroom_y_post", 0);
             user_x_post = intent.getDoubleExtra("user_x_post", 0);
             user_y_post = intent.getDoubleExtra("user_y_post", 0);
+        } else {
+            Log.e(TAG, "Error al obtener el intent");
         }
-
-        // TODO: Acceder a Firebase para obtener la imagen de ese baño y actualizar el ImageView
 
         buttonRuta = findViewById(R.id.como_ir);
         tituloTextView = findViewById(R.id.bath_title);
         takeFoto = findViewById(R.id.add_foto);
 
         tituloTextView.setText(imgTitle);
-
-        /* myButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goBackToPreviousActivity();
-            }
-        });*/
+        setImage();
 
         buttonRuta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +92,7 @@ public class BathroomActivity extends AppCompatActivity {
 
                     if(activityCode == Integer.parseInt(context.getString(R.string.camera_code))) {
                         Log.i(TAG, "CameraActivity Terminada Correctamente");
-                        // TODO: Cuando termine la actividad de la camara actualizar la imagen del ImageView
-
+                        setImage();
                     } else if(activityCode == Integer.parseInt(context.getString(R.string.emt_code))) {
                         Log.i(TAG, "EMTActivity Terminada Correctamente");
                     }
@@ -110,5 +108,25 @@ public class BathroomActivity extends AppCompatActivity {
         // resultIntent.putExtra("paramName", value); // Agrega los datos que deseas devolver a la actividad anterior
         setResult(RESULT_OK, resultIntent);
         finish();
+    }
+
+    private void setImage() {
+
+        // Si imgTitle no tiene valor se sale
+        if (Strings.isNullOrEmpty(imgTitle)) {
+            return;
+        }
+
+        myStorage.retrievePicture(imgTitle, new MyFirebaseStorage.OnImageDownloadedListener() {
+            @Override
+            public void onImageDownloaded(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onImageDownloadedError(String errorMessage) {
+                Log.e(TAG, "Error al recuperar la imagen: " + errorMessage);
+            }
+        });
     }
 }
