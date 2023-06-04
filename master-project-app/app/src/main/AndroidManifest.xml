@@ -25,24 +25,14 @@
             android:name=".EMTActivity"
             android:exported="false" />
         <activity
-            android:name=".EMTActivity"
-            android:exported="false" />
-        <activity
             android:name=".BathroomActivity"
             android:exported="false" />
         <activity
             android:name=".CameraActivity"
             android:exported="false" />
-<<<<<<< HEAD
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-=======
-        <activity
-            android:name=".BathroomActivity"
-            android:exported="false" />
->>>>>>> 312b88b (baños activity)
         <activity
             android:name=".MapActivity"
             android:exported="false" />
