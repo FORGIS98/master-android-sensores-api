@@ -1,6 +1,7 @@
 package com.example.masterprojectapp;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
