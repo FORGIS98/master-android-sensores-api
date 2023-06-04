@@ -31,6 +31,7 @@ import java.util.List;
 
 public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAccessTokenListener {
     private static final String TAG = "EMTActivity";
+    private int ACTIVITY_CODE;
 
     private TextView routeTitle;
     private MapView map;
@@ -57,6 +58,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         setContentView(R.layout.activity_emt);
 
         Context context = getApplicationContext();
+        ACTIVITY_CODE = Integer.parseInt(context.getString(R.string.emt_code));
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -126,8 +128,8 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
     @Override
     public void onAccessTokenError() {
-        Log.i(TAG, "Ha habido un Error");
-        // Manejar errores al obtener el token de acceso
+        Log.e(TAG, "Ha habido un error al obtener el token de acceso");
+        goBackToPreviousActivity(RESULT_CANCELED);
     }
 
     private void getDate() {
@@ -196,5 +198,12 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void goBackToPreviousActivity(int resultStatus) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("activityCode", ACTIVITY_CODE);
+        setResult(resultStatus, resultIntent);
+        finish();
     }
 }
