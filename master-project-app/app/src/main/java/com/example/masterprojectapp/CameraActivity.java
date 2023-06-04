@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
-
+    private int ACTIVITY_CODE;
     private static final String TAG = "CameraActivity";
     private static final int PERMISSION_REQUEST_CAMERA = 200;
 
@@ -89,6 +89,9 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        Context context = getApplicationContext();
+        ACTIVITY_CODE = Integer.parseInt(context.getString(R.string.camera_code));
 
         imageView = findViewById(R.id.capturedImageView);
 
@@ -468,7 +471,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void goBackToPreviousActivity() {
         Intent resultIntent = new Intent();
-        resultIntent.putExtra("activityCode", 1);
+        resultIntent.putExtra("activityCode", ACTIVITY_CODE);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

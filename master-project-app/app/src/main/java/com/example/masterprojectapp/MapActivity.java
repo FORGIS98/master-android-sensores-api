@@ -117,6 +117,7 @@ public class MapActivity extends AppCompatActivity {
 
     private void startBathroomActivity(String title, Double restroom_x_post, Double restroom_y_post, Double user_x_post, Double user_y_post) {
         Intent intent = new Intent(MapActivity.this, BathroomActivity.class);
+        intent.putExtra("activity_code", title);
         intent.putExtra("title", title);
         intent.putExtra("restroom_x_post", restroom_x_post);
         intent.putExtra("restroom_y_post", restroom_y_post);
