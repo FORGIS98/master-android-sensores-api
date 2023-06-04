@@ -22,4 +22,10 @@
     <string name="take_picture">Hacer Foto</string>
     <string name="save_picture">Guardar</string>
 
+    <!-- Activities Codes -->
+    <string name="register_code">1</string>
+    <string name="map_code">2</string>
+    <string name="bathroom_code">3</string>
+    <string name="camera_code">4</string>
+    <string name="emt_code">5</string>
 </resources>

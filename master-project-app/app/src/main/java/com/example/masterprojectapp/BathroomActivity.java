@@ -17,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class BathroomActivity extends AppCompatActivity {
 
+    private int ACTIVITY_CODE;
     private static final String TAG = "BathroomActivity";
     private ActivityResultLauncher<Intent> activityLauncher;
 
@@ -34,6 +35,9 @@ public class BathroomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bathroom);
+
+        Context context = getApplicationContext();
+        ACTIVITY_CODE = Integer.parseInt(context.getString(R.string.bathroom_code));
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -86,28 +90,13 @@ public class BathroomActivity extends AppCompatActivity {
                 Intent resultIntent = result.getData();
                 if (result.getResultCode() == RESULT_OK && resultIntent != null) {
                     int activityCode = resultIntent.getIntExtra("activityCode", 0);
-                    switch (activityCode) {
-                        case 1:
-                            Log.i(TAG, "CameraActivity Terminada Correctamente");
-                            MyFirebaseStorage myFirebaseStorage = new MyFirebaseStorage();
-                            myFirebaseStorage.retrievePicture(imgTitle, new MyFirebaseStorage.OnImageDownloadedListener() {
-                                @Override
-                                public void onImageDownloaded(Bitmap bitmap) {
 
-                                }
+                    if(activityCode == Integer.parseInt(context.getString(R.string.camera_code))) {
+                        Log.i(TAG, "CameraActivity Terminada Correctamente");
+                        // TODO: Cuando termine la actividad de la camara actualizar la imagen del ImageView
 
-                                @Override
-                                public void onImageDownloadedError(String errorMessage) {
-
-                                }
-                            });
-                            break;
-                        case 2:
-                            Log.i(TAG, "EMTActivity Terminada Correctamente");
-                            break;
-                        default:
-                            Log.e(TAG, "Actividad no reconocida.");
-                            break;
+                    } else if(activityCode == Integer.parseInt(context.getString(R.string.emt_code))) {
+                        Log.i(TAG, "EMTActivity Terminada Correctamente");
                     }
                 } else if (result.getResultCode() == RESULT_CANCELED) {
                     Log.e(TAG, "La activity ha terminado mal");
