@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,13 +64,15 @@ public class CameraActivity extends AppCompatActivity {
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
+    private boolean photoTaken = false;
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-
+    private String imgTitle;
     private String cameraId;
     private CameraDevice cameraDevice;
     private CameraCaptureSession cameraCaptureSession;
@@ -88,6 +91,11 @@ public class CameraActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera);
 
         imageView = findViewById(R.id.capturedImageView);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            imgTitle = intent.getStringExtra("imgTitle");
+        }
 
         // Cambiar vista para que se vea la cámara
         textureImg = findViewById(R.id.camera_texture);
@@ -111,8 +119,9 @@ public class CameraActivity extends AppCompatActivity {
             btnSaveFoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(CameraActivity.this, "Guardado " , Toast.LENGTH_SHORT).show();
-                    // saveCapturedImage();
+                    Toast.makeText(CameraActivity.this, "Guardando la imagen..." , Toast.LENGTH_SHORT).show();
+                    saveCapturedImage();
+                    goBackToPreviousActivity();
                 }
             });
         }
@@ -162,22 +171,7 @@ public class CameraActivity extends AppCompatActivity {
 
     private void saveCapturedImage() {
         if (bitmapCapturedImage != null) {
-            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            String imageFileName = "IMG_" + timeStamp + ".jpg";
-            File imageFile = new File(storageDir, imageFileName);
-
-            try {
-                FileOutputStream outputStream = new FileOutputStream(imageFile);
-                bitmapCapturedImage.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                outputStream.close();
-
-                Toast.makeText(CameraActivity.this, "Imagen guardada en: " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            createCameraPreview();
+            // TODO: Almacenar imagen en Firebase
         }
     }
 
@@ -185,6 +179,8 @@ public class CameraActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                photoTaken = true;
+
                 Log.e(TAG, bitmap.toString());
 
                 textureImg.setVisibility(View.GONE); // Ocultar la vista de la cámara
@@ -193,15 +189,10 @@ public class CameraActivity extends AppCompatActivity {
                 btnCancelFoto.setVisibility(View.VISIBLE); // Mostrar el botón de cancel
                 imageView.setVisibility(View.VISIBLE); // Mostrar vista de la imagen capturada
 
-                // Rotar la imagen según la orientación del dispositivo
-                int rotation = getWindowManager().getDefaultDisplay().getRotation();
                 Matrix matrix = new Matrix();
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
+                int rotation = getWindowManager().getDefaultDisplay().getRotation();
                 if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
-                    matrix.postRotate(90); // Rotar 90 grados en sentido horario
-                    width = bitmap.getHeight();
-                    height = bitmap.getWidth();
+                    matrix.postRotate(90);
                 }
                 Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
@@ -301,6 +292,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private void createCameraPreview() {
         try {
+            photoTaken = false;
+
             SurfaceTexture texture = textureImg.getSurfaceTexture();
             assert texture != null;
             texture.setDefaultBufferSize(imageDimension.getWidth(), imageDimension.getHeight());
@@ -454,5 +447,29 @@ public class CameraActivity extends AppCompatActivity {
             imageReader.close();
             imageReader = null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i(TAG, "Botón de hacia atrás");
+        if (photoTaken) {
+            textureImg.setVisibility(View.VISIBLE);
+            btnTakeFoto.setVisibility(View.VISIBLE);
+
+            btnSaveFoto.setVisibility(View.GONE);
+            btnCancelFoto.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+
+            createCameraPreview();
+        } else {
+            goBackToPreviousActivity();
+        }
+    }
+
+    private void goBackToPreviousActivity() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("activityCode", 1);
+        setResult(RESULT_OK, resultIntent);
+        finish();
     }
 }

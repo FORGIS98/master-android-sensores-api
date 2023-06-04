@@ -11,15 +11,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import java.util.Calendar;
 
-import com.google.gson.JsonObject;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class BathroomActivity extends AppCompatActivity {
 
     private static final String TAG = "BathroomActivity";
     private ActivityResultLauncher<Intent> activityLauncher;
 
+    private String imgTitle;
     private Double restroom_x_post;
     private Double restroom_y_post;
     private Double user_x_post;
@@ -27,28 +27,29 @@ public class BathroomActivity extends AppCompatActivity {
 
     Button buttonRuta;
     TextView tituloTextView;
+    FloatingActionButton takeFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bathroom);
-        String title = "";
-
-        Context context = getApplicationContext();
 
         Intent intent = getIntent();
         if (intent != null) {
-            title = intent.getStringExtra("title");
+            imgTitle = intent.getStringExtra("title");
             restroom_x_post = intent.getDoubleExtra("restroom_x_post", 0);
             restroom_y_post = intent.getDoubleExtra("restroom_y_post", 0);
             user_x_post = intent.getDoubleExtra("user_x_post", 0);
             user_y_post = intent.getDoubleExtra("user_y_post", 0);
         }
 
+        // TODO: Acceder a Firebase para obtener la imagen de ese baño y actualizar el ImageView
+
         buttonRuta = findViewById(R.id.como_ir);
         tituloTextView = findViewById(R.id.bath_title);
+        takeFoto = findViewById(R.id.add_foto);
 
-        tituloTextView.setText(title);
+        tituloTextView.setText(imgTitle);
 
         /* myButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,14 +70,35 @@ public class BathroomActivity extends AppCompatActivity {
             }
         });
 
+        takeFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BathroomActivity.this, CameraActivity.class);
+                intent.putExtra("title", imgTitle);
+                activityLauncher.launch(intent);
+            }
+        });
+
         activityLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    Log.i(TAG, "EMTActivity Terminada Correctamente");
-
+                Intent resultIntent = result.getData();
+                if (result.getResultCode() == RESULT_OK && resultIntent != null) {
+                    int activityCode = resultIntent.getIntExtra("activityCode", 0);
+                    switch (activityCode) {
+                        case 1:
+                            Log.i(TAG, "CameraActivity Terminada Correctamente");
+                            // TODO: Cuando termine la actividad de la camara actualizar la imagen del ImageView
+                            break;
+                        case 2:
+                            Log.i(TAG, "EMTActivity Terminada Correctamente");
+                            break;
+                        default:
+                            Log.e(TAG, "Actividad no reconocida.");
+                            break;
+                    }
                 } else if (result.getResultCode() == RESULT_CANCELED) {
-                    Log.i(TAG, "EMTActivity Terminada Mal");
+                    Log.e(TAG, "La activity ha terminado mal");
                 }
             }
         );
