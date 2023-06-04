@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
+    id 'com.android.application' apply true
+    id 'com.google.gms.google-services' apply true
 }
 
 android {
@@ -43,9 +43,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    implementation 'com.google.firebase:firebase-auth:22.0.0'
+    implementation 'com.google.firebase:firebase-firestore:24.6.1'
     implementation 'org.osmdroid:osmdroid-android:6.1.16'
     implementation 'org.osmdroid:osmdroid-mapsforge:6.1.10'
     implementation 'org.osmdroid:osmdroid-wms:6.1.10'
