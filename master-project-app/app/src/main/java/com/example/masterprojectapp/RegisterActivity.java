@@ -74,8 +74,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            Log.i(TAG, "El usuario ya existe: " + currentUser.getEmail());
+            Log.i(TAG, "El usuario ya estaba logado: " + currentUser.getEmail());
             updateUI(currentUser);
+        } else  {
+            Log.i(TAG, "No existe usuario logado");
         }
 
         // [END onStart()]
@@ -87,7 +89,6 @@ public class RegisterActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(emailUser, passwordUser).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 if (task.isSuccessful()) {
                     Log.i(TAG, "Usuario " + emailUser + " registrado con éxito.");
                     FirebaseUser loggedUser = mAuth.getCurrentUser();
