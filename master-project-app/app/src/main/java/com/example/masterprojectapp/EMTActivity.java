@@ -12,7 +12,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -34,6 +36,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
     private int ACTIVITY_CODE;
 
     private TextView routeTitle;
+    private TextView pointDescription;
     private MapView map;
     private Marker userPosition;
     Drawable resizedIcon;
@@ -51,6 +54,8 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
     private int month;
     private int year;
 
+    private String title;
+    List<Marker> markers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +74,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         }
 
         routeTitle = findViewById(R.id.route_title);
-        routeTitle.setText("PEPE");
+        pointDescription = findViewById(R.id.description);
 
         map = findViewById(R.id.emt_map);
         map.setHorizontalMapRepetitionEnabled(false);
@@ -85,6 +90,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, desiredWidth, desiredHeight, true);
         resizedIcon = new BitmapDrawable(getResources(), resizedBitmap);
 
+        Toast.makeText(this, "Calculando ruta más óptima...", Toast.LENGTH_LONG).show();
         apiHandler = new EMTApiHandler();
         apiHandler.getAccessToken(this, context);
     }
@@ -94,7 +100,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         userPosition = new Marker(map);
 
         GeoPoint startPoint = new GeoPoint(user_y_post, user_x_post);
-        map.getController().setZoom(18.0);
+        map.getController().setZoom(18.5);
         map.getController().setCenter(startPoint);
 
         userPosition.setPosition(startPoint);
@@ -124,6 +130,20 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
         String responseBody = apiHandler.makeApiRequest(this, path, accessToken, params);
         drawRoute(responseBody);
+
+        // Modificar los textos con la ruta calculada
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(title != null && !title.isEmpty()) {
+                    routeTitle.setText(title);
+                    routeTitle.setVisibility(View.VISIBLE);
+                }
+                if(markers != null && !markers.isEmpty()) {
+                    showDescriptionPoint();
+                }
+            }
+        });
     }
 
     @Override
@@ -144,6 +164,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
     private void drawRoute(String responseBody) {
         List<GeoPoint> points = new ArrayList<>();
+        markers = new ArrayList<>();
 
         try {
             JSONObject jsonObject = new JSONObject(responseBody);
@@ -152,6 +173,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
             JSONArray sectionsArray = dataObject.getJSONArray("sections");
             JSONObject sectionsObject = sectionsArray.getJSONObject(0);
+            String routeDuration = sectionsObject.getString("duration");
 
             JSONObject routeObject = sectionsObject.getJSONObject("route");
 
@@ -180,9 +202,8 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
                     marker.setSnippet(description);
 
                     map.getOverlays().add(marker);
-
                     points.add(position);
-
+                    markers.add(marker);
                     Log.i(TAG, "latitude: " + latitude + "longitude: " + longitude);
                 }
             }
@@ -195,9 +216,32 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
             map.getOverlayManager().add(polyline);
             map.invalidate();
 
+            title = "La duración estimada de la ruta es de: " + routeDuration + "minutos.";
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showDescriptionPoint() {
+        for (final Marker marker : markers) {
+            marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker, MapView mapView) {
+                    String description = marker.getSnippet();
+
+                    Log.i(TAG, "description: " + description);
+                    pointDescription.setText(description);
+                    pointDescription.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.i(TAG, "Botón de hacia atrás");
+        goBackToPreviousActivity(RESULT_OK);
     }
 
     private void goBackToPreviousActivity(int resultStatus) {
