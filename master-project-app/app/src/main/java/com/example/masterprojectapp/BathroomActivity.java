@@ -34,13 +34,14 @@ public class BathroomActivity extends AppCompatActivity {
     FloatingActionButton takeFoto;
     ImageView imageView;
 
-    MyFirebaseStorage myStorage = new MyFirebaseStorage();
+    MyFirebaseStorage myStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bathroom);
 
+        myStorage = new MyFirebaseStorage();
         Context context = getApplicationContext();
         ACTIVITY_CODE = Integer.parseInt(context.getString(R.string.bathroom_code));
 

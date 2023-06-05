@@ -69,7 +69,7 @@ public class MapActivity extends AppCompatActivity {
         GeoDataManager dataManager = new GeoDataManager();
         List<Marker> markerList = dataManager.parseGeoFile(this.getApplicationContext(), map);
 
-        Drawable customIcon = ContextCompat.getDrawable(this, R.drawable.ic_bathroom_position);
+        Drawable customIcon = ContextCompat.getDrawable(this, R.drawable.ic_vater);
         Bitmap bitmap = ((BitmapDrawable) customIcon).getBitmap();
         int desiredWidth = 35;
         int desiredHeight = 35;

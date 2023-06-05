@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,20 +25,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Polyline;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PathEffect;
+import android.graphics.DashPathEffect;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ZoomButtonsController;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAccessTokenListener {
     private static final String TAG = "EMTActivity";
     private int ACTIVITY_CODE;
-
-    private TextView routeTitle;
+    private LinearLayout linearLayoutDuration;
+    private LinearLayout linearLayout_Way;
     private TextView pointDescription;
+    private TextView textView_duration;
+    private TextView textView_arrivalTime;
+    private ImageButton button_exit;
     private MapView map;
     private Marker userPosition;
     Drawable resizedIcon;
@@ -54,7 +73,8 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
     private int month;
     private int year;
 
-    private String title;
+    private String arrivalTime;
+    private String duration;
     List<Marker> markers;
 
     @Override
@@ -73,8 +93,12 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
             user_y_post = intent.getDoubleExtra("user_y_post", 0);
         }
 
-        routeTitle = findViewById(R.id.route_title);
         pointDescription = findViewById(R.id.description);
+        linearLayoutDuration = findViewById(R.id.containerDuration);
+        textView_duration = findViewById(R.id.duration);
+        textView_arrivalTime = findViewById(R.id.arrivalTime);
+        linearLayout_Way = findViewById(R.id.containerWay);
+        button_exit = findViewById(R.id.exit);
 
         map = findViewById(R.id.emt_map);
         map.setHorizontalMapRepetitionEnabled(false);
@@ -93,6 +117,13 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         Toast.makeText(this, "Calculando ruta más óptima...", Toast.LENGTH_LONG).show();
         apiHandler = new EMTApiHandler();
         apiHandler.getAccessToken(this, context);
+
+        button_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBackToPreviousActivity(RESULT_OK);
+            }
+        });
     }
 
     private void getInitialUserPosition() {
@@ -114,7 +145,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
         String path = "transport/busemtmad/travelplan/";
         JsonObject params = new JsonObject();
-        params.addProperty("routeType", "P");
+        params.addProperty("routeType", "W");
         params.addProperty("coordinateXFrom", user_x_post);
         params.addProperty("coordinateYFrom", user_y_post);
         params.addProperty("coordinateXTo", restroom_x_post);
@@ -135,11 +166,17 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(title != null && !title.isEmpty()) {
-                    routeTitle.setText(title);
-                    routeTitle.setVisibility(View.VISIBLE);
+                if(duration != null && textView_arrivalTime != null && !duration.isEmpty() && !arrivalTime.isEmpty()) {
+                    linearLayoutDuration.setVisibility(View.VISIBLE);
+                    textView_duration.setText(duration);
+                    textView_arrivalTime.setText(arrivalTime);
                 }
                 if(markers != null && !markers.isEmpty()) {
+                    Marker marker = markers.get(0);
+                    String description = marker.getSnippet();
+                    pointDescription.setText(description);
+                    linearLayout_Way.setVisibility(View.VISIBLE);
+
                     showDescriptionPoint();
                 }
             }
@@ -170,10 +207,17 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
             JSONObject jsonObject = new JSONObject(responseBody);
 
             JSONObject dataObject = jsonObject.getJSONObject("data");
+            String dataTime = dataObject.getString("arrivalTime");
+            arrivalTime = getArrivalTime(dataTime);
 
             JSONArray sectionsArray = dataObject.getJSONArray("sections");
             JSONObject sectionsObject = sectionsArray.getJSONObject(0);
-            String routeDuration = sectionsObject.getString("duration");
+
+            String str_duration = sectionsObject.getString("duration");
+            double valor = Double.parseDouble(str_duration);
+            long horas = (long) valor / 60;
+            long minutos = (long) valor % 60;
+            duration = horas + "h y " + minutos + "min";
 
             JSONObject routeObject = sectionsObject.getJSONObject("route");
 
@@ -211,12 +255,15 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
             polyline.setPoints(points);
 
             Paint paint = polyline.getOutlinePaint();
-            paint.setColor(Color.BLUE);
+            paint.setColor(Color.rgb(19, 141, 117));
+            paint.setStyle(Paint.Style.FILL);
+            paint.setStrokeWidth(10f);
+            PathEffect pathEffect = new DashPathEffect(new float[]{10, 10}, 0);
+            paint.setPathEffect(pathEffect);
 
             map.getOverlayManager().add(polyline);
             map.invalidate();
 
-            title = "La duración estimada de la ruta es de: " + routeDuration + "minutos.";
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -231,13 +278,24 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
 
                     Log.i(TAG, "description: " + description);
                     pointDescription.setText(description);
-                    pointDescription.setVisibility(View.VISIBLE);
                     return true;
                 }
             });
         }
     }
+    private String getArrivalTime(String dataTime) {
+        String time;
+        try {
+            SimpleDateFormat completedFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            Date date = completedFormat.parse(dataTime);
 
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            time = timeFormat.format(date);
+        } catch (ParseException e) {
+            time = "";
+        }
+        return time;
+    }
     @Override
     public void onBackPressed() {
         Log.i(TAG, "Botón de hacia atrás");
