@@ -97,7 +97,7 @@ public class CameraActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            imgTitle = intent.getStringExtra("imgTitle");
+            imgTitle = intent.getStringExtra("title");
         }
 
         // Cambiar vista para que se vea la cámara
@@ -174,6 +174,26 @@ public class CameraActivity extends AppCompatActivity {
 
     private void saveCapturedImage() {
         if (bitmapCapturedImage != null) {
+            Matrix matrix = new Matrix();
+            int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
+                matrix.postRotate(90);
+            }
+
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmapCapturedImage, 0, 0, bitmapCapturedImage.getWidth(), bitmapCapturedImage.getHeight(), matrix, true);
+
+            BitmapDrawable drawable = new BitmapDrawable(getResources(), rotatedBitmap);
+            imageView.setImageDrawable(drawable);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setRotation(rotation * 90); // Girar la vista del ImageView según la orientación del dispositivo
+
+            if (BathroomActivity.imageView != null) {
+                BitmapDrawable bathDrawable = new BitmapDrawable(getResources(), rotatedBitmap);
+                BathroomActivity.imageView.setImageDrawable(drawable);
+                BathroomActivity.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setRotation(rotation * 90); // Girar la vista del ImageView según la orientación del dispositivo
+            }
+
             MyFirebaseStorage myStorage = new MyFirebaseStorage();
             myStorage.savePicture(imgTitle, bitmapCapturedImage, "-1");
         }

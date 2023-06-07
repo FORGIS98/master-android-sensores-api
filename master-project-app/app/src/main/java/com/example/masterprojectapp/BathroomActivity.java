@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +33,7 @@ public class BathroomActivity extends AppCompatActivity {
     Button buttonRuta;
     TextView tituloTextView;
     FloatingActionButton takeFoto;
-    ImageView imageView;
+    public static ImageView imageView;
 
     MyFirebaseStorage myStorage;
 
@@ -59,8 +60,10 @@ public class BathroomActivity extends AppCompatActivity {
         buttonRuta = findViewById(R.id.como_ir);
         tituloTextView = findViewById(R.id.bath_title);
         takeFoto = findViewById(R.id.add_foto);
+        imageView = findViewById(R.id.foto);
 
         tituloTextView.setText(imgTitle);
+
         setImage();
 
         buttonRuta.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +96,6 @@ public class BathroomActivity extends AppCompatActivity {
 
                     if(activityCode == Integer.parseInt(context.getString(R.string.camera_code))) {
                         Log.i(TAG, "CameraActivity Terminada Correctamente");
-                        setImage();
                     } else if(activityCode == Integer.parseInt(context.getString(R.string.emt_code))) {
                         Log.i(TAG, "EMTActivity Terminada Correctamente");
                     }
@@ -121,7 +123,10 @@ public class BathroomActivity extends AppCompatActivity {
         myStorage.retrievePicture(imgTitle, new MyFirebaseStorage.OnImageDownloadedListener() {
             @Override
             public void onImageDownloaded(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
+                BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+                imageView.setImageDrawable(drawable);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
             }
 
             @Override
