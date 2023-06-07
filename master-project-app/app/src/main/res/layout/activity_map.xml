@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/baseline_logout_24"
                 android:layout_margin="8dp"
-                android:background="@android:color/transparent" />
+                android:background="@android:color/transparent"
+                android:layout_gravity="end"/>
         </FrameLayout>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
