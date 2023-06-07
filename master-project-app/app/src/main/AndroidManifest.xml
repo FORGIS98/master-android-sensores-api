@@ -23,6 +23,17 @@
         tools:replace="android:allowBackup"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.MasterProjectApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".EMTActivity"
             android:exported="false" />
         <activity
@@ -31,9 +42,11 @@
         <activity
             android:name=".CameraActivity"
             android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".MapActivity"
             android:exported="false" />
@@ -42,14 +55,7 @@
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MasterProjectApp">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"/>
     </application>
 
 </manifest>

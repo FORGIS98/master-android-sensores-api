@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/fondo"
-    tools:context=".RegisterActivity">
+    tools:context=".LoginActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -28,14 +28,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sign Up"
+                android:text="Login"
                 android:textSize="26sp"
                 android:textAlignment="center"
                 android:textStyle="bold"
                 android:textColor="@color/lavender"/>
 
             <EditText
-                android:id="@+id/email_register"
+                android:id="@+id/email_login"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/custom_edittext"
@@ -47,7 +47,7 @@
                 android:textColor="@color/black" />
 
             <EditText
-                android:id="@+id/password_register"
+                android:id="@+id/password_login"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@drawable/custom_edittext"
@@ -60,20 +60,20 @@
                 android:textColor="@color/black" />
 
             <Button
-                android:id="@+id/button_register"
+                android:id="@+id/button_login"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="SIGN UP"
+                android:text="LOGIN"
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/lavender"
                 app:cornerRadius="20dp"/>
 
             <TextView
-                android:id="@+id/loginText"
+                android:id="@+id/register_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="¿Ya eres un usuario? Login"
+                android:text="¿Aún no es usuario? Sign Up"
                 android:layout_gravity="center"
                 android:padding="8dp"
                 android:layout_marginTop="10dp"

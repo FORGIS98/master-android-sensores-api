@@ -19,7 +19,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.osmdroid.config.Configuration;
 import org.osmdroid.mapsforge.BuildConfig;
@@ -36,12 +40,14 @@ public class MapActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> activityLauncher;
 
     private MapView map;
+    private ImageButton logoutBottom;
     private Marker userGpsPosition;
 
     private LocationManager locationManager;
 
     private boolean centerUser = true;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private FirebaseAuth mAuth;
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
@@ -50,6 +56,8 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
 
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+
+        logoutBottom = findViewById(R.id.logoutBottom);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -112,7 +120,16 @@ public class MapActivity extends AppCompatActivity {
                 }
             }
         );
-        // [END onCreate]
+        logoutBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Logout del usuario y vuelta a login
+                FirebaseAuth.getInstance().signOut();
+                Intent resultIntent = new Intent();
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 
     private void startBathroomActivity(String title, Double restroom_x_post, Double restroom_y_post, Double user_x_post, Double user_y_post) {
