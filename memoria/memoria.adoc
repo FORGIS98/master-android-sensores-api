@@ -1,0 +1,46 @@
+# Me Meo
+
+:doctype: book
+:docname: Me Meo
+:author: Paula Pousa y Jorge Sol
+:revdate: {localdate}
+:imagesdir: {docdir}/images
+:toc: left
+:toclevels: 5
+:pdf-theme: themes/my-theme.yml
+
+## Funcionalidades
+
+### ¿En qué Consiste la Aplicación?
+
+Nuestra aplicación, apodada *Me Meo* es una aplicación móvil que muestra los cuartos de baño públicos que hay en Madrid. La aplicación localiza tu posición y aparecen en el mapa marcados los cuartos de baño mas cercanos, al pulsar sobre uno de ellos puedes ver una foto de como se encuentra el baño y puedes mostrar la ruta mas corta para llegar andando hasta él.
+
+### Autenticación de Usuarios
+
+Para autenticar a los usuarios y poder mantener un registro de quienes se han logado en nuestra aplicación, se ha utilizado *FireBase* de _Google_ el cual ha permitido autenticar a usuarios con correo y contraseña, o si el usuario lo prefiere, con su cuenta de _Google_. En todos los casos, los usuarios reciben un correo electrónico cuando su usuario se crea correctamente. La aplicación es inteligente, y si se abre por segunda vez, se verifica contra firebase para ver si el usuario ya estaba logado y así no se le vuelve a pasar por la página de login.
+
+### Conexiones a una API
+
+La API que se ha utilizado en el proyecto es la API de autobuses de Madrid (link:xxx[API EMT Madrid]), la cual tiene una funcionalidad que te dice como llegar desde un punto A a un punto B andando. Esta información la devuelve en forma de coordenadas con un texto descriptivo explicando que calle debes tomar o que giro debes realizar. En la aplicación se muestra mediante una línea la ruta y se marca con puntos el detalle de la calle o giro que debes tomar.
+
+### Información de los Cuartos de Baño
+
+La información de los cuartos de baño es sacada de un conjunto de datos que se encuentran publicados en link:xxx[xxx] donde tienes la opción de descargar un archivo con la información de las coordenadas y calle donde se encuentra el cuarto de baño. Al ser un archivo muy ligero, viene incorporado en la aplicación junto al resto del código.
+
+### Recogida de Datos de Sensores
+
+Para los sensores se ha hecho uso de la geolocalización del dispositivo móvil con ayuda de los sensores que tiene incorporados. Y también se ha utilizado la cámara trasera del móvil para tomar fotografías.
+
+### GPS y Mapa
+
+Con ayuda de la latitud y longitud que se recuperan de los sensores, se ha podido geolocalizar al usuario autenticado, y con ayuda de link:xxx[Open Street Map] se muestra al usuario un mapa con su localización. En este mismo mapa se muestran también los cuartos de baño, y cuando un usuario desea obtener indicaciones para llegar a alguno de los cuartos de baño, es en este mismo mapa donde se le muestra la ruta que debe seguir.
+
+### Persistencia de Datos en la Nube de Google
+
+
+
+## Enlaces
+
+- Enlace al vídeo: 
+- Enlace al repositorio de github: 
+- Enlace a la API utilizada: 
