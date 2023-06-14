@@ -3,6 +3,7 @@ package com.example.masterprojectapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -199,6 +200,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
     }
 
 
+    @SuppressLint("ResourceAsColor")
     private void drawRoute(String responseBody) {
         List<GeoPoint> points = new ArrayList<>();
         markers = new ArrayList<>();
@@ -255,7 +257,7 @@ public class EMTActivity extends AppCompatActivity implements EMTApiHandler.OnAc
             polyline.setPoints(points);
 
             Paint paint = polyline.getOutlinePaint();
-            paint.setColor(Color.rgb(19, 141, 117));
+            paint.setColor(R.color.lavender);
             paint.setStyle(Paint.Style.FILL);
             paint.setStrokeWidth(10f);
             PathEffect pathEffect = new DashPathEffect(new float[]{10, 10}, 0);
