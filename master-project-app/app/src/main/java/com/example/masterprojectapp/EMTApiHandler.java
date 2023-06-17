@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class EMTApiHandler {
 
-    private static final String API_BASE_URL = "https://openapi.emtmadrid.es/v1/";
+    private static final String API_BASE_URL = "https://openapi.emtmadrid.es/v2/";
     private static final String TAG = "EMTApiHandler";
 
     public void getAccessToken(final OnAccessTokenListener listener, Context context) {

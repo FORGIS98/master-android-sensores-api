@@ -86,12 +86,12 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     Log.i(TAG, "Usuario " + email + " registrado con éxito.");
-                    // sendEmailVerification();
+                    sendEmailVerification();
                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                     finish();
                 } else {
-                    Log.e(TAG, "Error al registar el usuario" + task.getException().getMessage());
-                    Toast.makeText(RegisterActivity.this, "Error al registar el usuario" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error al registar el usuario " + task.getException().getMessage());
+                    Toast.makeText(RegisterActivity.this, "Error al registar el usuario.", Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

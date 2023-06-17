@@ -19,13 +19,17 @@ Nuestra aplicación, apodada *Me Meo* es una aplicación móvil que muestra los 
 
 Para autenticar a los usuarios y poder mantener un registro de quienes se han logado en nuestra aplicación, se ha utilizado *FireBase* de _Google_ el cual ha permitido autenticar a usuarios con correo y contraseña, o si el usuario lo prefiere, con su cuenta de _Google_. En todos los casos, los usuarios reciben un correo electrónico cuando su usuario se crea correctamente. La aplicación es inteligente, y si se abre por segunda vez, se verifica contra firebase para ver si el usuario ya estaba logado y así no se le vuelve a pasar por la página de login.
 
+image::login.jpg
+
 ### Conexiones a una API
 
-La API que se ha utilizado en el proyecto es la API de autobuses de Madrid (link:xxx[API EMT Madrid]), la cual tiene una funcionalidad que te dice como llegar desde un punto A a un punto B andando. Esta información la devuelve en forma de coordenadas con un texto descriptivo explicando que calle debes tomar o que giro debes realizar. En la aplicación se muestra mediante una línea la ruta y se marca con puntos el detalle de la calle o giro que debes tomar.
+La API que se ha utilizado en el proyecto es la API de autobuses de Madrid (link:https://apidocs.emtmadrid.es/[API EMT Madrid]), la cual tiene una funcionalidad que te dice como llegar desde un punto A a un punto B andando. Esta información la devuelve en forma de coordenadas con un texto descriptivo explicando que calle debes tomar o que giro debes realizar. En la aplicación se muestra mediante una línea la ruta y se marca con puntos el detalle de la calle o giro que debes tomar.
 
 ### Información de los Cuartos de Baño
 
-La información de los cuartos de baño es sacada de un conjunto de datos que se encuentran publicados en link:xxx[xxx] donde tienes la opción de descargar un archivo con la información de las coordenadas y calle donde se encuentra el cuarto de baño. Al ser un archivo muy ligero, viene incorporado en la aplicación junto al resto del código.
+La información de los cuartos de baño es sacada de un conjunto de datos que se encuentran publicados en link:https://datos.madrid.es/sites/v/index.jsp?vgnextoid=edcaaa8cf6bda510VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD[xxx] donde tienes la opción de descargar un archivo con la información de las coordenadas y calle donde se encuentra el cuarto de baño. Al ser un archivo muy ligero, viene incorporado en la aplicación junto al resto del código.
+
+image::mapa-baños.jpg
 
 ### Recogida de Datos de Sensores
 
@@ -33,14 +37,33 @@ Para los sensores se ha hecho uso de la geolocalización del dispositivo móvil 
 
 ### GPS y Mapa
 
-Con ayuda de la latitud y longitud que se recuperan de los sensores, se ha podido geolocalizar al usuario autenticado, y con ayuda de link:xxx[Open Street Map] se muestra al usuario un mapa con su localización. En este mismo mapa se muestran también los cuartos de baño, y cuando un usuario desea obtener indicaciones para llegar a alguno de los cuartos de baño, es en este mismo mapa donde se le muestra la ruta que debe seguir.
+Con ayuda de la latitud y longitud que se recuperan de los sensores, se ha podido geolocalizar al usuario autenticado, y con ayuda de link:https://www.openstreetmap.org[Open Street Map] se muestra al usuario un mapa con su localización. En este mismo mapa se muestran también los cuartos de baño, y cuando un usuario desea obtener indicaciones para llegar a alguno de los cuartos de baño, es en este mismo mapa donde se le muestra la ruta que debe seguir.
+
+[cols="a,a", frame=none, grid=none]
+|===
+| image::mapa-direcciones.jpg
+| image::baños-resultado.jpg
+|===
 
 ### Persistencia de Datos en la Nube de Google
 
-
+De los datos que se gestionan en la aplicación, se persisten en la nube tanto los datos de los usuarios, como la última fotografía que se ha tomado de un cuarto de baño. Para ello se hace uso del *Storage* que proporciona _Firebase_. Cada imágen se guarda con el nombre de la calle en la que se encuentra, y cuando un usuario quiere ver la imágen lo único que tiene que hacer es pulsar sobre un cuarto de baño y la imágen se carga en la pantalla.
 
 ## Enlaces
 
-- Enlace al vídeo: 
-- Enlace al repositorio de github: 
-- Enlace a la API utilizada: 
+* Enlace al vídeo con audio (mp4):  https://upm365-my.sharepoint.com/:v:/g/personal/jorge_sol_gonzalez_alumnos_upm_es/ERMNE4vMikhCqBtStLcc8tMBOZyQ691JckDW5fvUjp6cPg?e=cMX4on
+* Enlace al vídeo con audio (mkv): https://upm365-my.sharepoint.com/:v:/g/personal/jorge_sol_gonzalez_alumnos_upm_es/Ec1An43qLPJNm2V-Vi3UQGEBsfu8adeOrIMcaOoOm6PDEg?e=osqqtS
+* Enlace al repositorio de github: https://github.com/FORGIS98/master-android-sensores-api
+* Enlace a los datos públicos de baños de Madrid: https://datos.madrid.es/sites/v/index.jsp?vgnextoid=edcaaa8cf6bda510VgnVCM1000001d4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD
+* Enlace a la API utilizada: https://apidocs.emtmadrid.es/
+  * Para poder consumir este API se debe crear un usuario en el portal de la EMT: https://mobilitylabs.emtmadrid.es/
+  * Una vez creado, se debe crear en el proyecto, el archivo "master-project-app/app/src/main/res/values/api_credentials.xml"
+  * El contenido del archivo debe ser el siguiente, modificando el email y la contraseña por los utilizados en la EMT:
+[source,xml]
+----
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="client_id">email@email.com</string>
+    <string name="client_secret">password</string>
+</resources>
+----

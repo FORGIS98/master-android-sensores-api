@@ -50,17 +50,6 @@
                     android:layout_margin="16dp" />
             </FrameLayout>
 
-            <!-- Valoración con estrellas -->
-            <RatingBar
-                android:id="@+id/bath_valoration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="1"
-                android:rating="4"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

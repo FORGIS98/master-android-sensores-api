@@ -195,7 +195,7 @@ public class CameraActivity extends AppCompatActivity {
             }
 
             MyFirebaseStorage myStorage = new MyFirebaseStorage();
-            myStorage.savePicture(imgTitle, bitmapCapturedImage, "-1");
+            myStorage.savePicture(imgTitle, rotatedBitmap, "-1");
         }
     }
 

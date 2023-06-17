@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -124,9 +126,16 @@ public class BathroomActivity extends AppCompatActivity {
             @Override
             public void onImageDownloaded(Bitmap bitmap) {
                 BitmapDrawable drawable = new BitmapDrawable(getResources(), bitmap);
+
+                Matrix matrix = new Matrix();
+                int rotation = getWindowManager().getDefaultDisplay().getRotation();
+                if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) {
+                    matrix.postRotate(90);
+                }
+
                 imageView.setImageDrawable(drawable);
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
+                imageView.setRotation(rotation * 90); // Girar la vista del ImageView según la orientación del dispositivo
             }
 
             @Override
